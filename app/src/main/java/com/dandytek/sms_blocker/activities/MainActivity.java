@@ -22,6 +22,10 @@ import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
+
+import com.dandytek.sms_blocker.services.FirebaseSpamTagService;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -49,6 +53,9 @@ import com.dandytek.sms_blocker.utils.ContactsAccessHelper;
 import com.dandytek.sms_blocker.utils.DatabaseAccessHelper.Contact;
 import com.dandytek.sms_blocker.utils.Permissions;
 import com.dandytek.sms_blocker.utils.Settings;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -87,6 +94,9 @@ public class MainActivity extends AppCompatActivity
                 view.setVisibility(View.VISIBLE);
             }
         }
+
+
+        startService(new Intent(this, FirebaseSpamTagService.class));
 
         // drawer
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
