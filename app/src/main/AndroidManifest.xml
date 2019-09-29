@@ -133,6 +133,12 @@
         <!-- Service sends SMS messages -->
         <service android:name="com.dandytek.sms_blocker.services.SMSSendService" />
 
+        <!-- BroadcastReceiver listens for fetching Spam SMS tags -->
+        <receiver android:name=".receivers.FirebaseSpamTagReceiver" />
+
+        <!-- Service that runs in background to fetch Spam SMS tag -->
+        <service android:name=".services.FirebaseSpamTagService" />
+
     </application>
 
 </manifest>
