@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
+
 
 android {
     lintOptions {
@@ -8,7 +8,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "28.0.3"
     defaultConfig {
-        applicationId "com.dandytek.smsblocker"
+        applicationId "com.dandytek.sms_blocker"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 18
@@ -40,8 +40,8 @@ dependencies {
 
     // Add the SDKs for any other Firebase products you want to use in your app
     // For example, to use Firebase Authentication and Cloud Firestore
-    implementation 'com.google.firebase:firebase-auth:19.1.0'
-    implementation 'com.google.firebase:firebase-firestore:21.1.1'
+    // implementation 'com.google.firebase:firebase-auth:19.1.0'
+   // implementation 'com.google.firebase:firebase-firestore:21.1.1'
 
     // Getting a "Could not find" error? Make sure that you've added
     // Google's Maven repository to your root-level build.gradle file
@@ -52,4 +52,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+apply plugin: 'com.google.gms.google-services'
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Blacklist Blocker</string>
+    <string name="app_name">SMS-Blocker</string>
     <string name="Open_navigation_drawer">Open navigation drawer</string>
     <string name="Close_navigation_drawer">Close navigation drawer</string>
     <string name="Settings_action">Settings</string>

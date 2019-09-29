@@ -36,7 +36,7 @@
 
     </RelativeLayout>
 
-    <com.kaliturin.blacklist.utils.CheckableLinearLayout
+    <com.dandytek.sms_blocker.utils.CheckableLinearLayout
         android:id="@+id/content_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -104,6 +104,6 @@
             android:clickable="false"
             app:buttonTint="?selector_checkbox_tint" />
 
-    </com.kaliturin.blacklist.utils.CheckableLinearLayout>
+    </com.dandytek.sms_blocker.utils.CheckableLinearLayout>
 
 </LinearLayout>

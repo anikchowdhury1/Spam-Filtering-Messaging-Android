@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.kaliturin.blacklist"
+    package="com.dandytek.sms_blocker"
     android:versionCode="18"
     android:versionName="1.2.12">
 
@@ -36,7 +36,7 @@
 
         <!-- The main activity -->
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.dandytek.sms_blocker.activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Dark">
 
@@ -73,11 +73,11 @@
 
         <!-- Generic custom activity -->
         <activity
-            android:name=".activities.CustomFragmentActivity"
+            android:name="com.dandytek.sms_blocker.activities.CustomFragmentActivity"
             android:theme="@style/AppTheme.Dark" />
 
         <!-- BroadcastReceiver listens for incoming calls -->
-        <receiver android:name=".receivers.CallBroadcastReceiver">
+        <receiver android:name="com.dandytek.sms_blocker.receivers.CallBroadcastReceiver">
             <intent-filter android:priority="100">
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
@@ -85,7 +85,7 @@
 
         <!-- BroadcastReceiver listens for incoming SMS messages -->
         <receiver
-            android:name=".receivers.SMSBroadcastReceiver"
+            android:name="com.dandytek.sms_blocker.receivers.SMSBroadcastReceiver"
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter android:priority="100">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
@@ -95,7 +95,7 @@
 
         <!-- BroadcastReceiver listens for incoming MMS messages -->
         <receiver
-            android:name=".receivers.MMSBroadcastReceiver"
+            android:name="com.dandytek.sms_blocker.receivers.MMSBroadcastReceiver"
             android:permission="android.permission.BROADCAST_WAP_PUSH">
             <intent-filter>
                 <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
@@ -107,7 +107,7 @@
 
         <!-- Service delivers messages from the phone "quick response" -->
         <service
-            android:name=".services.SMSRespondService"
+            android:name="com.dandytek.sms_blocker.services.SMSRespondService"
             android:exported="true"
             android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE">
             <intent-filter>
@@ -122,16 +122,16 @@
         </service>
 
         <!-- BroadcastReceiver listens for sending/delivering SMS messages -->
-        <receiver android:name=".receivers.SMSSendResultBroadcastReceiver" />
+        <receiver android:name="com.dandytek.sms_blocker.receivers.SMSSendResultBroadcastReceiver" />
 
         <!-- Service processes received SMS messages -->
-        <service android:name=".services.SMSProcessService" />
+        <service android:name="com.dandytek.sms_blocker.services.SMSProcessService" />
 
         <!-- Service processes SMS/Call blocking events -->
-        <service android:name=".services.BlockEventProcessService" />
+        <service android:name="com.dandytek.sms_blocker.services.BlockEventProcessService" />
 
         <!-- Service sends SMS messages -->
-        <service android:name=".services.SMSSendService" />
+        <service android:name="com.dandytek.sms_blocker.services.SMSSendService" />
 
     </application>
 

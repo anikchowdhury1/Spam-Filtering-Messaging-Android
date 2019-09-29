@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.kaliturin.blacklist.fragments.SMSConversationFragment">
+    tools:context="com.dandytek.sms_blocker.fragments.SMSConversationFragment">
 
     <ListView
         android:id="@+id/rows_list"
