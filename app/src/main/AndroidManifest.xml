@@ -18,8 +18,6 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
 
-    <uses-sdk android:targetSdkVersion="28" />
-
     <supports-screens
         android:anyDensity="true"
         android:resizeable="true"
