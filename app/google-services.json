@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "773585188704",
+    "firebase_url": "https://sms-blocker-7697b.firebaseio.com",
+    "project_id": "sms-blocker-7697b",
+    "storage_bucket": "sms-blocker-7697b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:773585188704:android:6396ed7dc4c627c28fd005",
+        "android_client_info": {
+          "package_name": "com.dandytek.sms_blocker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "773585188704-1r77he3tsdge3c90oa2i82se5p9rc8k9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuNSJ8eIjJOlw4BW63QbuZd9mLPWR4P8g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "773585188704-1r77he3tsdge3c90oa2i82se5p9rc8k9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:773585188704:android:b831ea8ffe3d31458fd005",
+        "android_client_info": {
+          "package_name": "com.dandytek.smsblocker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "773585188704-1r77he3tsdge3c90oa2i82se5p9rc8k9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuNSJ8eIjJOlw4BW63QbuZd9mLPWR4P8g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "773585188704-1r77he3tsdge3c90oa2i82se5p9rc8k9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
