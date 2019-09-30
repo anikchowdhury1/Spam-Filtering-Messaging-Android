@@ -6,12 +6,24 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FirebaseSpamTagService extends Service {
     public FirebaseSpamTagService() {
@@ -26,7 +38,31 @@ public class FirebaseSpamTagService extends Service {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Log.d("testing","test firestore");
 
-        db.collection("tag")
+
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(true)
+                .build();
+        db.setFirestoreSettings(settings);
+
+        final Map<String, Object> firestore_data = new HashMap<>();
+
+
+
+
+// The default cache size threshold is 100 MB. Configure "setCacheSizeBytes"
+// for a different threshold (minimum 1 MB) or set to "CACHE_SIZE_UNLIMITED"
+// to disable clean-up.
+
+        settings = new FirebaseFirestoreSettings.Builder()
+                .setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED)
+                .build();
+        db.setFirestoreSettings(settings);
+
+
+
+
+
+      /*  db.collection("tag")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -39,10 +75,180 @@ public class FirebaseSpamTagService extends Service {
                             Log.w("firestore error", "Error getting documents.", task.getException());
                         }
                     }
+                }); */
+
+
+
+
+
+      /*  db.collection("tag").document("SpamList")
+                .set(city)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("firestore send data", "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("firestore sending error", "Error writing document", e);
+                    }
+                }); */
+
+
+        db.collection("tag")
+                .addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot querySnapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w("firestore L e", "Listen error", e);
+                            return;
+                        }
+
+                        for (DocumentChange change : querySnapshot.getDocumentChanges()) {
+                            if (change.getType() == DocumentChange.Type.ADDED) {
+                                Log.d("firestore L C", "New tag:" + change.getDocument().getData().values());
+                            }
+
+                            String source = querySnapshot.getMetadata().isFromCache() ?
+                                    "local cache" : "server";
+                            String cache_data = querySnapshot.getDocuments().toString();
+
+                            Log.d("firestore Cache", "Data fetched from " + source + cache_data);
+                        }
+
+                    }
                 });
 
 
 
+  /*      DocumentReference docRefs = db.collection("tag").document("SpamList");
+
+// Source can be CACHE, SERVER, or DEFAULT.
+        Source source = Source.CACHE;
+
+
+// Get the document, forcing the SDK to use the offline cache
+        docRefs.get(source).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    // Document found in the offline cache
+                    DocumentSnapshot document = task.getResult();
+
+                    Log.d("firestore cache", "Cached document data: " + document.getData().values());
+                } else {
+                    Log.d("firestore cache Failed", "Cached get failed: ", task.getException());
+                }
+            }
+        });
+*/
+
+
+
+        final DocumentReference docRef = db.collection("tag").document("SpamList");
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("firestore listen failed", "Listen failed.", e);
+                    return;
+                }
+
+                String source = snapshot != null && snapshot.getMetadata().hasPendingWrites()
+                        ? "Local" : "Server";
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d("firestore cache", source + " data: " + snapshot.getData());
+                } else {
+                    Log.d("firestore cache null", source + " data: null");
+                }
+            }
+        });
+
+
+         String fromPath = db.collection("tag").document("dhN31FezLbNKXluS7hFB").getPath();
+
+         String toPath = db.collection("tag").document("SpamList").getPath();
+
+        DocumentReference fPath = db.collection("tag").document("dhN31FezLbNKXluS7hFB");
+
+        DocumentReference tPath = db.collection("tag").document("SpamList");
+
+
+         Log.d("firestore FromPath:",fromPath);
+         Log.d("firestore ToPath:",toPath);
+
+        Log.d("Doc firestore FromPath:", String.valueOf(fPath));
+        Log.d("Doc firestore ToPath:", String.valueOf(tPath));
+
+
+
+       // String fromPath = "/tag/dhN31FezLbNKXluS7hFB";
+        // String toPath = "/tag/SpamList";
+
+
+      // function to update one document to another
+       // moveFirestoreDocument(fPath,tPath);
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+    // Function to move one document's data to another document on same collection
+
+    public void moveFirestoreDocument(final DocumentReference fromPath, final DocumentReference toPath) {
+        fromPath.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        toPath.set(document.getData())
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("firestore doc write success", "DocumentSnapshot successfully written!");
+                                        fromPath.delete()
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Log.d("firestore doc write deleted", "DocumentSnapshot successfully deleted!");
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.w("firestore doc write error", "Error deleting document", e);
+                                                    }
+                                                });
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("firestore doc error", "Error writing document", e);
+                                    }
+                                });
+                    } else {
+                        Log.d("firestore doc", "No such document");
+                    }
+                } else {
+                    Log.d("firestore failed exception", "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
     @Override
