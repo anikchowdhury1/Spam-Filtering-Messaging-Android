@@ -22,10 +22,11 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileReader;
@@ -69,7 +70,7 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
         }
     }
 
-    private DatabaseAccessHelper(Context context) {
+    public DatabaseAccessHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         // helper won't create the database file until we first open it
         SQLiteDatabase db = getWritableDatabase();
@@ -826,6 +827,8 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
         if (number == null) {
             number = contactName;
         }
+
+        Log.d("person number name:",number);
         List<ContactNumber> numbers = new LinkedList<>();
         numbers.add(new ContactNumber(0, number, 0));
         return addContact(contactType, contactName, numbers);

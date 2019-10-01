@@ -22,10 +22,11 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
 
 public class FirebaseSpamTagService extends Service {
+
+
     public FirebaseSpamTagService() {
     }
 
@@ -33,18 +34,26 @@ public class FirebaseSpamTagService extends Service {
     @Override
     public void onCreate() {
         // Code to execute when the service is first created
+        firebaseOfflineDataCollection();
+
+    }
+
+
+
+
+    public void firebaseOfflineDataCollection(){
 
         // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Log.d("testing","test firestore");
+
+        final String return_data;
 
 
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(true)
                 .build();
         db.setFirestoreSettings(settings);
-
-        final Map<String, Object> firestore_data = new HashMap<>();
 
 
 
@@ -60,41 +69,6 @@ public class FirebaseSpamTagService extends Service {
 
 
 
-
-
-      /*  db.collection("tag")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("firestore success", document.getId() + " => " + document.getData().values());
-                            }
-                        } else {
-                            Log.w("firestore error", "Error getting documents.", task.getException());
-                        }
-                    }
-                }); */
-
-
-
-
-
-      /*  db.collection("tag").document("SpamList")
-                .set(city)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("firestore send data", "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("firestore sending error", "Error writing document", e);
-                    }
-                }); */
 
 
         db.collection("tag")
@@ -124,30 +98,6 @@ public class FirebaseSpamTagService extends Service {
 
 
 
-  /*      DocumentReference docRefs = db.collection("tag").document("SpamList");
-
-// Source can be CACHE, SERVER, or DEFAULT.
-        Source source = Source.CACHE;
-
-
-// Get the document, forcing the SDK to use the offline cache
-        docRefs.get(source).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    // Document found in the offline cache
-                    DocumentSnapshot document = task.getResult();
-
-                    Log.d("firestore cache", "Cached document data: " + document.getData().values());
-                } else {
-                    Log.d("firestore cache Failed", "Cached get failed: ", task.getException());
-                }
-            }
-        });
-*/
-
-
-
         final DocumentReference docRef = db.collection("tag").document("SpamList");
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -159,10 +109,18 @@ public class FirebaseSpamTagService extends Service {
                 }
 
                 String source = snapshot != null && snapshot.getMetadata().hasPendingWrites()
-                        ? "Local" : "Server";
+                        ? "Server" : "Local";
 
                 if (snapshot != null && snapshot.exists()) {
-                    Log.d("firestore cache", source + " data: " + snapshot.getData());
+                    Collection<Object> x = snapshot.getData().values();
+                    String gg = String.valueOf(x);
+                   // return_data = gg;
+                    // firestore_data[0] = String.valueOf(x);
+                    Log.d("firestore cache", source + " data: " + snapshot.getData().values());
+                    Log.d("firestore cache data type", source + " data: " + snapshot.getData().values().getClass().getName());
+                    Log.d("firestore coll",String.valueOf(x));
+                    Log.d("firestore String",gg);
+
                 } else {
                     Log.d("firestore cache null", source + " data: null");
                 }
@@ -170,37 +128,19 @@ public class FirebaseSpamTagService extends Service {
         });
 
 
-         String fromPath = db.collection("tag").document("dhN31FezLbNKXluS7hFB").getPath();
 
-         String toPath = db.collection("tag").document("SpamList").getPath();
+        String fromPath = db.collection("tag").document("dhN31FezLbNKXluS7hFB").getPath();
+
+        String toPath = db.collection("tag").document("SpamList").getPath();
 
         DocumentReference fPath = db.collection("tag").document("dhN31FezLbNKXluS7hFB");
 
         DocumentReference tPath = db.collection("tag").document("SpamList");
 
 
-         Log.d("firestore FromPath:",fromPath);
-         Log.d("firestore ToPath:",toPath);
 
-        Log.d("Doc firestore FromPath:", String.valueOf(fPath));
-        Log.d("Doc firestore ToPath:", String.valueOf(tPath));
-
-
-
-       // String fromPath = "/tag/dhN31FezLbNKXluS7hFB";
-        // String toPath = "/tag/SpamList";
-
-
-      // function to update one document to another
-       // moveFirestoreDocument(fPath,tPath);
-
-
-
-
-
-
-
-
+        // function to update one document to another
+        // moveFirestoreDocument(fPath,tPath);
 
 
     }
