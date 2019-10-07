@@ -21,9 +21,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.telephony.SmsMessage;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.dandytek.sms_blocker.R;
 import com.dandytek.sms_blocker.services.BlockEventProcessService;
@@ -61,6 +62,7 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
 
         // is app the "default SMS app" ?
         boolean isDefaultSmsApp = DefaultSMSAppHelper.isDefault(context);
+        Log.d("default sms",String.valueOf(isDefaultSmsApp));
 
         // if "default SMS app" feature is available and app is default
         if (DefaultSMSAppHelper.isAvailable() &&
@@ -74,6 +76,8 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
         if (data == null) {
             return;
         }
+
+        Log.d("sms data",String.valueOf(data));
 
         // if isn't "default SMS app" or if message isn't blocked
         if (!isDefaultSmsApp || !processMessageData(context, data)) {
@@ -113,6 +117,8 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
         String subject = message.getPseudoSubject();
         subject = (subject != null && !subject.isEmpty() ? subject : null);
         data.put(ContactsAccessHelper.SUBJECT, subject);
+
+        Log.d("total sms data",String.valueOf(data));
 
         return data;
     }
@@ -173,9 +179,14 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
         // if contact is from the black list
         if (Settings.getBooleanValue(context, Settings.BLOCK_SMS_FROM_BLACK_LIST)) {
             contact = findContactByType(contacts, Contact.TYPE_BLACK_LIST);
-            if (contact != null) {
+            Contact contact_fs = findContactByType(contacts, Contact.TYPE_FS_BLACK_LIST);
+            if (contact != null || contact_fs != null) {
                 // abort SMS and notify user
-                abortSMSAndNotify(context, number, contact.name, body);
+                if (contact_fs != null)
+                    abortSMSAndNotify(context, number, contact_fs.name, body);
+                else
+                    abortSMSAndNotify(context, number, contact.name, body);
+
                 return true;
             }
         }
@@ -272,6 +283,7 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
         // prevent placing this SMS to the inbox
         abortBroadcast();
         // process the event of blocking in the service
+        Log.d("firestore blacklist:",name + number);
         BlockEventProcessService.start(context, number, name, body);
     }
 }

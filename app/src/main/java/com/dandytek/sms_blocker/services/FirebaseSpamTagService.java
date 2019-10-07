@@ -100,15 +100,17 @@ public class FirebaseSpamTagService extends Service {
                             Map<String, Object> test_data = new HashMap<>();
                             test_data = dc.getDocument().getData();
                             Log.d("firestore key val",test_data.get("sender").toString());
+                            String person = String.valueOf(test_data.get("sender"));
+                            String sms_number = person;
 
-                            dtb.addContact(Contact.TYPE_BLACK_LIST, String.valueOf(test_data.get("sender")),String.valueOf(test_data.get("sender")));
+                            dtb.addContact(Contact.TYPE_FS_BLACK_LIST, person,sms_number);
 
                            // Log.d("firestore query: ", query.toString());
 
                             switch (dc.getType()) {
                                 case ADDED:
                                     Log.d("firestore data added", "New data: " + test_data);
-                                    Log.d("firestore added class", "New class: " + test_data.getClass().getName());
+                                   // Log.d("firestore added class", "New class: " + test_data.getClass().getName());
                                     break;
                                 case MODIFIED:
                                     Log.d("firestore data mod", "Modified data: " + test_data);

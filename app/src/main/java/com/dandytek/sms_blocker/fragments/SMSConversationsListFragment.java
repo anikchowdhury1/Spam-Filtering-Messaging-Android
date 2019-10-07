@@ -260,7 +260,8 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
                 // 'move contact to black list'
                 DatabaseAccessHelper.Contact contact = db.getContact(person, sms.number);
                 Log.d("person contact: ",String.valueOf(contact));
-                if (contact == null || contact.type != Contact.TYPE_BLACK_LIST) {
+
+                if (contact == null || contact.type != Contact.TYPE_BLACK_LIST || contact.type != Contact.TYPE_FS_BLACK_LIST) {
                     dialog.addItem(R.string.Move_to_black_list, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

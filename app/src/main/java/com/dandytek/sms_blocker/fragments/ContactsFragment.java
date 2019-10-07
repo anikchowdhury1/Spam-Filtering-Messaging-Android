@@ -19,16 +19,7 @@ package com.dandytek.sms_blocker.fragments;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.fragment.app.Fragment;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.CursorLoader;
-import androidx.loader.content.Loader;
-import androidx.core.view.MenuItemCompat;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +29,17 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 
 import com.dandytek.sms_blocker.R;
 import com.dandytek.sms_blocker.activities.CustomFragmentActivity;
@@ -93,6 +95,8 @@ public class ContactsFragment extends Fragment implements FragmentArguments {
         if (arguments != null) {
             contactType = arguments.getInt(CONTACT_TYPE, 0);
         }
+
+        Log.d("contact type: ", String.valueOf(contactType));
 
         if (savedInstanceState != null) {
             listPosition = savedInstanceState.getInt(LIST_POSITION, 0);
@@ -205,7 +209,7 @@ public class ContactsFragment extends Fragment implements FragmentArguments {
         listView.setEmptyView(textEmptyView);
 
         // load the list view
-        loadListViewItems(itemsFilter, false, listPosition);
+         loadListViewItems(itemsFilter, false, listPosition);
 
         // prompt how to enable SMS-blocking
         showDefaultSMSAppPrompt();

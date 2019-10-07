@@ -28,9 +28,10 @@ import android.provider.CallLog.Calls;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.util.Log;
 
 import com.dandytek.sms_blocker.utils.DatabaseAccessHelper.Contact;
 import com.dandytek.sms_blocker.utils.DatabaseAccessHelper.ContactNumber;
@@ -1119,9 +1120,13 @@ public class ContactsAccessHelper {
     public static boolean isPrivatePhoneNumber(@Nullable String number) {
         try {
             if (number == null) {
+                Log.d("firestore private","private");
                 return true;
             }
+
+            Log.d("firestore not null",number);
             number = number.trim();
+            Log.d("firestore trim null",number);
             if (number.isEmpty() || Long.valueOf(number) < 0) {
                 return true;
             }

@@ -617,6 +617,7 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
     public static class Contact {
         public static final int TYPE_BLACK_LIST = 1;
         public static final int TYPE_WHITE_LIST = 2;
+        public static final int TYPE_FS_BLACK_LIST = 3;
 
         public final long id;
         public final String name;
@@ -822,6 +823,7 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
         return addContact(contactType, contactName, numbers);
     }
 
+    @Nullable
     // Adds contact with single number with default type
     public long addContact(int contactType, @NonNull String contactName, @Nullable String number) {
         if (number == null) {
