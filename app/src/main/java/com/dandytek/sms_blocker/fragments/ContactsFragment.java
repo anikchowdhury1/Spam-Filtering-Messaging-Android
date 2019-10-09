@@ -347,20 +347,22 @@ public class ContactsFragment extends Fragment implements FragmentArguments {
 
     // Loads SMS conversations to the list view
     private void loadListViewItems(String itemsFilter, boolean deleteItems, int listPosition) {
-        if (!isAdded()) {
-            return;
-        }
-        int loaderId = 0;
-        ContactsLoaderCallbacks callbacks =
-                new ContactsLoaderCallbacks(getContext(), contactType, cursorAdapter,
-                        itemsFilter, deleteItems, listView, listPosition);
-        LoaderManager manager = getLoaderManager();
-        if (manager.getLoader(loaderId) == null) {
-            // init and run the items loader
-            manager.initLoader(loaderId, null, callbacks);
-        } else {
-            // restart loader
-            manager.restartLoader(loaderId, null, callbacks);
+        if (contactType == 2 || contactType == 1){
+            if (!isAdded()) {
+                return;
+            }
+            int loaderId = 0;
+            ContactsLoaderCallbacks callbacks =
+                    new ContactsLoaderCallbacks(getContext(), contactType, cursorAdapter,
+                            itemsFilter, deleteItems, listView, listPosition);
+            LoaderManager manager = getLoaderManager();
+            if (manager.getLoader(loaderId) == null) {
+                // init and run the items loader
+                manager.initLoader(loaderId, null, callbacks);
+            } else {
+                // restart loader
+                manager.restartLoader(loaderId, null, callbacks);
+            }
         }
     }
 

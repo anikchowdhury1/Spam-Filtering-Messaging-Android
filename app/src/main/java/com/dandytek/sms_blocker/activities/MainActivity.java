@@ -16,29 +16,26 @@
 
 package com.dandytek.sms_blocker.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
-
-import com.dandytek.sms_blocker.services.FirebaseSpamTagService;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.navigation.NavigationView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.dandytek.sms_blocker.R;
 import com.dandytek.sms_blocker.fragments.ContactsFragment;
@@ -50,12 +47,23 @@ import com.dandytek.sms_blocker.fragments.SMSConversationsListFragment;
 import com.dandytek.sms_blocker.fragments.SMSSendFragment;
 import com.dandytek.sms_blocker.fragments.SettingsFragment;
 import com.dandytek.sms_blocker.utils.ContactsAccessHelper;
+import com.dandytek.sms_blocker.utils.DatabaseAccessHelper;
 import com.dandytek.sms_blocker.utils.DatabaseAccessHelper.Contact;
 import com.dandytek.sms_blocker.utils.Permissions;
 import com.dandytek.sms_blocker.utils.Settings;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -96,7 +104,7 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        startService(new Intent(this, FirebaseSpamTagService.class));
+
 
         // drawer
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -163,7 +171,193 @@ public class MainActivity extends AppCompatActivity
 
         // select navigation menu item
         selectNavigationMenuItem(itemId);
+
+
+        firebaseOfflineDataCollection();
+
+       // startService(new Intent(this, FirebaseSpamTagService.class));
+
+
+
     }
+
+
+
+
+
+
+
+
+    public void firebaseOfflineDataCollection(){
+
+        Context context = getApplicationContext();
+        final DatabaseAccessHelper fs_db = DatabaseAccessHelper.getInstance(context);
+
+        if (fs_db != null)
+        {
+
+            // Access a Cloud Firestore instance from your Activity
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            Log.d("testing","test firestore");
+
+            final String return_data;
+
+
+            FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                    .setPersistenceEnabled(true)
+                    .build();
+
+
+//        db.setFirestoreSettings(settings);
+
+
+
+
+// The default cache size threshold is 100 MB. Configure "setCacheSizeBytes"
+// for a different threshold (minimum 1 MB) or set to "CACHE_SIZE_UNLIMITED"
+// to disable clean-up.
+
+            settings = new FirebaseFirestoreSettings.Builder()
+                    .setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED)
+                    .build();
+            db.setFirestoreSettings(settings);
+
+
+            final CollectionReference spamRef = db.collection("spam_sms");
+
+
+
+
+
+            db.collection("spam_sms").whereEqualTo("type", "blacklist")
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot snapshots,
+                                            @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                Log.w("firestore listen error", "listen:error", e);
+                                return;
+                            }
+
+                            for (DocumentChange dc : snapshots.getDocumentChanges()) {
+
+                                // Query query = spamRef.whereArrayContains("type", "blacklist");
+                                Map<String, Object> test_data = new HashMap<>();
+                                test_data = dc.getDocument().getData();
+                                Log.d("firestore key val",test_data.get("sender").toString());
+                                String person = String.valueOf(test_data.get("sender"));
+                                String sms_number = person;
+
+                                Log.d("firestore type: ", String.valueOf(Contact.TYPE_FS_BLACK_LIST));
+                                Log.d("firestore person",person);
+                                Log.d("firestore sms_number",sms_number);
+
+                                //assert fs_db != null;
+
+
+
+                                if (person != null)
+                                    fs_db.addContact(Contact.TYPE_FS_BLACK_LIST, person,sms_number);
+
+
+
+
+
+                                // Log.d("firestore query: ", query.toString());
+
+                                switch (dc.getType()) {
+                                    case ADDED:
+                                        Log.d("firestore data added", "New data: " + test_data);
+                                        // Log.d("firestore added class", "New class: " + test_data.getClass().getName());
+                                        break;
+                                    case MODIFIED:
+                                        Log.d("firestore data mod", "Modified data: " + test_data);
+                                        break;
+                                    case REMOVED:
+                                        Log.d("firestore data removed", "Removed data: " + test_data);
+                                        break;
+                                }
+                            }
+
+                        }
+                    });
+
+
+
+
+
+            final CollectionReference collRef = db.collection("spam_sms");
+            // final DocumentReference docRef = db.collection("tag").document("SpamList");
+            collRef.document().addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                    @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        //  Log.w("firestore listen failed", "Listen failed.", e);
+                        return;
+                    }
+
+                    String source = snapshot != null && snapshot.getMetadata().hasPendingWrites()
+                            ? "Server" : "Local";
+
+                    if (snapshot != null && snapshot.exists()) {
+                        Map<String, Object> docData = new HashMap<>();
+                        Collection<Object> x = snapshot.getData().values();
+                        docData = snapshot.getData();
+                        String gg = String.valueOf(x);
+                        Object value = snapshot.getData().values();
+                        // ArrayList<String> listOfValues = new ArrayList<String>(x);
+
+                        //  ArrayList hh = (ArrayList) value;
+                        //  ArrayList<String> value_data = new ArrayList<>((HashMap<String, Object>) snapshot.getData()).value_data();
+
+
+                        // return_data = gg;
+                        // firestore_data[0] = String.valueOf(x);
+                        Log.d("firestore cache", source + " data: " + snapshot.getData().values());
+                        //   Log.d("firestore cache data type", source + " data: " + snapshot.getData().values().getClass().getName());
+                        //   Log.d("firestore coll",String.valueOf(x));
+                        //    Log.d("firestore String",gg);
+                        //   Log.d("firestore object:",value.toString());
+                        //   Log.d("firestore array:",hh.toString());
+                        //    Log.d("firestore hashmap",docData.toString());
+
+
+                 /*   if(value instanceof List) {
+                        List<Object> values = (List<Object>) value;
+                        // do your magic with values
+
+                        for (int i = 0; i < values.size(); i++){
+                            Log.d("firestore list: ",String.valueOf(i) + " "+ values.listIterator(i));
+                        }
+                    }
+                    else {
+                        // handle other possible types
+                        Log.d("firestore list error","error");
+                    } */
+
+                  /*  for (int i = 0; i < listOfValues.size(); i++){
+                        Log.d("firestore list: ",String.valueOf(i) + " "+ listOfValues.listIterator(i));
+                    } */
+
+
+
+                    } else {
+                        // Log.d("firestore cache null", source + " data: null");
+                    }
+                }
+            });
+
+        }
+
+
+
+
+
+    }
+
+
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -282,6 +476,8 @@ public class MainActivity extends AppCompatActivity
 
             // checking
             Log.d("checking arguments:",String.valueOf(arguments));
+
+
 
             switch (itemId) {
                 case R.id.nav_journal:

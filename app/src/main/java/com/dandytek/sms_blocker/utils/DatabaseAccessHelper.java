@@ -823,7 +823,23 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
         return addContact(contactType, contactName, numbers);
     }
 
+
+
+    // Adds contact with single number with default type
     @Nullable
+    public long addContact_fs(int contactType, @Nullable String contactName, @Nullable String number) {
+        if (number == null) {
+            number = contactName;
+        }
+
+        Log.d("person number name:",number);
+        List<ContactNumber> numbers = new LinkedList<>();
+        numbers.add(new ContactNumber(0, number, 0));
+        return addContact(contactType, contactName, numbers);
+    }
+
+
+
     // Adds contact with single number with default type
     public long addContact(int contactType, @NonNull String contactName, @Nullable String number) {
         if (number == null) {

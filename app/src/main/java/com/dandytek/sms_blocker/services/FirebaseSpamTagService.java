@@ -63,6 +63,8 @@ public class FirebaseSpamTagService extends Service {
        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(true)
                 .build();
+
+
 //        db.setFirestoreSettings(settings);
 
 
@@ -103,7 +105,10 @@ public class FirebaseSpamTagService extends Service {
                             String person = String.valueOf(test_data.get("sender"));
                             String sms_number = person;
 
-                            dtb.addContact(Contact.TYPE_FS_BLACK_LIST, person,sms_number);
+                            assert dtb != null;
+                            if (person != null)
+                                dtb.addContact(Contact.TYPE_FS_BLACK_LIST, person,sms_number);
+
 
                            // Log.d("firestore query: ", query.toString());
 
