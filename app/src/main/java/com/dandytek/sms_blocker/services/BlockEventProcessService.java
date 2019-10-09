@@ -19,9 +19,10 @@ package com.dandytek.sms_blocker.services;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.util.Log;
 
 import com.dandytek.sms_blocker.receivers.InternalEventBroadcast;
 import com.dandytek.sms_blocker.utils.ContactsAccessHelper;
@@ -61,6 +62,7 @@ public class BlockEventProcessService extends IntentService {
             Log.w(TAG, "number and name can't be null");
             return;
         }
+        Log.d("firestore log name:", number + name);
 
         if (name == null) {
             // get name from the contacts

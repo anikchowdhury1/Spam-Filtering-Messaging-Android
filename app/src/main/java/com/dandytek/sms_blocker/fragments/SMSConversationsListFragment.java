@@ -21,14 +21,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.CursorLoader;
-import androidx.loader.content.Loader;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,10 +32,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dandytek.sms_blocker.receivers.InternalEventBroadcast;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+
 import com.dandytek.sms_blocker.R;
 import com.dandytek.sms_blocker.activities.CustomFragmentActivity;
 import com.dandytek.sms_blocker.adapters.SMSConversationsListCursorAdapter;
+import com.dandytek.sms_blocker.receivers.InternalEventBroadcast;
 import com.dandytek.sms_blocker.utils.ContactsAccessHelper;
 import com.dandytek.sms_blocker.utils.ContactsAccessHelper.SMSConversation;
 import com.dandytek.sms_blocker.utils.DatabaseAccessHelper;
@@ -230,6 +230,9 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
 
             final String person = (sms.person != null ? sms.person : sms.number);
 
+            Log.d("person",person);
+            Log.d("person's sms",sms.number);
+
             // create menu dialog
             DialogBuilder dialog = new DialogBuilder(getContext());
             dialog.setTitle(person);
@@ -256,7 +259,9 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
             if (db != null) {
                 // 'move contact to black list'
                 DatabaseAccessHelper.Contact contact = db.getContact(person, sms.number);
-                if (contact == null || contact.type != Contact.TYPE_BLACK_LIST) {
+                Log.d("person contact: ",String.valueOf(contact));
+
+                if (contact == null || contact.type != Contact.TYPE_BLACK_LIST || contact.type != Contact.TYPE_FS_BLACK_LIST) {
                     dialog.addItem(R.string.Move_to_black_list, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
