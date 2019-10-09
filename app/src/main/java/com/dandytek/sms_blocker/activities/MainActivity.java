@@ -54,14 +54,12 @@ import com.dandytek.sms_blocker.utils.Settings;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -208,10 +206,6 @@ public class MainActivity extends AppCompatActivity
                     .build();
 
 
-//        db.setFirestoreSettings(settings);
-
-
-
 
 // The default cache size threshold is 100 MB. Configure "setCacheSizeBytes"
 // for a different threshold (minimum 1 MB) or set to "CACHE_SIZE_UNLIMITED"
@@ -239,6 +233,7 @@ public class MainActivity extends AppCompatActivity
                                 return;
                             }
 
+                            assert snapshots != null;
                             for (DocumentChange dc : snapshots.getDocumentChanges()) {
 
                                 // Query query = spamRef.whereArrayContains("type", "blacklist");
@@ -283,70 +278,6 @@ public class MainActivity extends AppCompatActivity
                     });
 
 
-
-
-
-            final CollectionReference collRef = db.collection("spam_sms");
-            // final DocumentReference docRef = db.collection("tag").document("SpamList");
-            collRef.document().addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                    @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        //  Log.w("firestore listen failed", "Listen failed.", e);
-                        return;
-                    }
-
-                    String source = snapshot != null && snapshot.getMetadata().hasPendingWrites()
-                            ? "Server" : "Local";
-
-                    if (snapshot != null && snapshot.exists()) {
-                        Map<String, Object> docData = new HashMap<>();
-                        Collection<Object> x = snapshot.getData().values();
-                        docData = snapshot.getData();
-                        String gg = String.valueOf(x);
-                        Object value = snapshot.getData().values();
-                        // ArrayList<String> listOfValues = new ArrayList<String>(x);
-
-                        //  ArrayList hh = (ArrayList) value;
-                        //  ArrayList<String> value_data = new ArrayList<>((HashMap<String, Object>) snapshot.getData()).value_data();
-
-
-                        // return_data = gg;
-                        // firestore_data[0] = String.valueOf(x);
-                        Log.d("firestore cache", source + " data: " + snapshot.getData().values());
-                        //   Log.d("firestore cache data type", source + " data: " + snapshot.getData().values().getClass().getName());
-                        //   Log.d("firestore coll",String.valueOf(x));
-                        //    Log.d("firestore String",gg);
-                        //   Log.d("firestore object:",value.toString());
-                        //   Log.d("firestore array:",hh.toString());
-                        //    Log.d("firestore hashmap",docData.toString());
-
-
-                 /*   if(value instanceof List) {
-                        List<Object> values = (List<Object>) value;
-                        // do your magic with values
-
-                        for (int i = 0; i < values.size(); i++){
-                            Log.d("firestore list: ",String.valueOf(i) + " "+ values.listIterator(i));
-                        }
-                    }
-                    else {
-                        // handle other possible types
-                        Log.d("firestore list error","error");
-                    } */
-
-                  /*  for (int i = 0; i < listOfValues.size(); i++){
-                        Log.d("firestore list: ",String.valueOf(i) + " "+ listOfValues.listIterator(i));
-                    } */
-
-
-
-                    } else {
-                        // Log.d("firestore cache null", source + " data: null");
-                    }
-                }
-            });
 
         }
 

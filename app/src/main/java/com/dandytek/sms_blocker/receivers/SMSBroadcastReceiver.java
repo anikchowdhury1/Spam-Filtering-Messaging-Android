@@ -185,7 +185,12 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
                 if (contact_fs != null)
                     abortSMSAndNotify(context, number, contact_fs.name, body);
                 else
-                    abortSMSAndNotify(context, number, contact.name, body);
+                {
+                    if (contact != null)
+                        abortSMSAndNotify(context, number, contact.name, body);
+                }
+
+
 
                 return true;
             }
