@@ -55,7 +55,7 @@
             android:paddingRight="5dp"
             android:scrollHorizontally="true"
             android:textColorHint="?colorTextSecondary"
-            android:textSize="@dimen/textSize18" />
+            android:textSize="@dimen/textSize16" />
 
     </LinearLayout>
 

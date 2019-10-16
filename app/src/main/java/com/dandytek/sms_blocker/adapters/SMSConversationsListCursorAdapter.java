@@ -18,17 +18,19 @@ package com.dandytek.sms_blocker.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import androidx.annotation.Nullable;
-import androidx.collection.LongSparseArray;
-import androidx.cursoradapter.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.collection.LongSparseArray;
+import androidx.cursoradapter.widget.CursorAdapter;
+
 import com.dandytek.sms_blocker.R;
 import com.dandytek.sms_blocker.utils.ContactsAccessHelper.SMSConversation;
 import com.dandytek.sms_blocker.utils.ContactsAccessHelper.SMSConversationWrapper;
+import com.dandytek.sms_blocker.utils.IdentifiersContainer;
 import com.dandytek.sms_blocker.utils.Utils;
 
 import java.text.DateFormat;
@@ -44,6 +46,7 @@ public class SMSConversationsListCursorAdapter extends CursorAdapter {
     private final DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
     private final DateFormat yearLessDateFormat = Utils.getYearLessDateFormat(dateFormat);
     private final Calendar calendar = Calendar.getInstance();
+    private IdentifiersContainer checkedItems = new IdentifiersContainer(0);
     private Date datetime = new Date();
     private View.OnClickListener outerOnClickListener = null;
     private View.OnLongClickListener outerOnLongClickListener = null;
@@ -155,6 +158,15 @@ public class SMSConversationsListCursorAdapter extends CursorAdapter {
             }
         }
     }
+
+    // Sets all items checked/unchecked
+    public void setAllItemsChecked(boolean checked) {
+        if (checkedItems.setAll(checked)) {
+            notifyDataSetChanged();
+        }
+    }
+
+
 
     // Holder of the view data
     private class ViewHolder {

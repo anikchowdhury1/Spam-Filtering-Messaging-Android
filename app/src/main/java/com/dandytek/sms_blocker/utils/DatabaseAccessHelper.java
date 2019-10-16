@@ -435,6 +435,9 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
                             " ? LIKE '%'||" + Column.NUMBER + ") OR (" +
                             Column.TYPE + " = " + ContactNumber.TYPE_CONTAINS + " AND " +
                             " ? LIKE '%'||" + Column.NUMBER + "||'%')";
+
+
+
         }
     }
 
@@ -473,9 +476,13 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
             super(cursor);
             cursor.moveToFirst();
             ID = cursor.getColumnIndex(ContactNumberTable.Column.ID);
+            Log.d("get id:",String.valueOf(ID));
             NUMBER = cursor.getColumnIndex(ContactNumberTable.Column.NUMBER);
+            Log.d("get nb:",String.valueOf(NUMBER));
             TYPE = cursor.getColumnIndex(ContactNumberTable.Column.TYPE);
+            Log.d("get type:",String.valueOf(TYPE));
             CONTACT_ID = cursor.getColumnIndex(ContactNumberTable.Column.CONTACT_ID);
+            Log.d("get contact id:",String.valueOf(CONTACT_ID));
         }
 
         ContactNumber getNumber() {
@@ -490,6 +497,7 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
     // Deletes contact number by id
     private int deleteContactNumber(long id) {
         SQLiteDatabase db = getWritableDatabase();
+        Log.d("deleteContactNumber:",String.valueOf(id));
         return db.delete(ContactNumberTable.NAME,
                 ContactNumberTable.Column.ID + " = " + id,
                 null);
@@ -499,6 +507,7 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
     @Nullable
     private ContactNumberCursorWrapper getContactNumbersByContactId(long contactId) {
         SQLiteDatabase db = getReadableDatabase();
+        Log.d("getContactNumbersByContactId",String.valueOf(contactId));
         Cursor cursor = db.rawQuery(
                 ContactNumberTable.Statement.SELECT_BY_CONTACT_ID,
                 new String[]{String.valueOf(contactId)});
@@ -508,8 +517,9 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
 
     // Searches contact numbers by number value
     @Nullable
-    private ContactNumberCursorWrapper getContactNumbersByNumber(String number) {
+    public ContactNumberCursorWrapper getContactNumbersByNumber(String number) {
         SQLiteDatabase db = getReadableDatabase();
+        Log.d("getContactNumbersByNumber",number);
         Cursor cursor = db.rawQuery(
                 ContactNumberTable.Statement.SELECT_BY_NUMBER,
                 new String[]{number, number, number, number});
@@ -517,10 +527,12 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
         return (validate(cursor) ? new ContactNumberCursorWrapper(cursor) : null);
     }
 
+
     // Searches contact numbers by type and value
     @Nullable
     private ContactNumberCursorWrapper getContactNumbersByTypeAndNumber(int numberType, String number) {
         SQLiteDatabase db = getReadableDatabase();
+        Log.d("getContactNumbersByTypeAndNumber ", String.valueOf(numberType) + number);
         Cursor cursor = db.rawQuery(
                 ContactNumberTable.Statement.SELECT_BY_TYPE_AND_NUMBER,
                 new String[]{String.valueOf(numberType), number});
@@ -530,6 +542,7 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
 
     // Searches contact numbers by number value
     private List<ContactNumber> getContactNumbers(String number) {
+        Log.d("getContactNumbers", number);
         List<ContactNumber> list = new LinkedList<>();
         ContactNumberCursorWrapper cursor = getContactNumbersByNumber(number);
         if (cursor != null) {
@@ -545,6 +558,7 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
     // Searches contact numbers by numbers types and values
     // This method is mainly needed for retrieving actual ContactNumber.id and/or ContactNumber.contactId
     private List<ContactNumber> getContactNumbers(List<ContactNumber> numbers) {
+        Log.d("getContactNumbers list", String.valueOf(numbers));
         List<ContactNumber> list = new LinkedList<>();
         for (ContactNumber number : numbers) {
             ContactNumberCursorWrapper cursor =

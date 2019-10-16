@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:textSize="@dimen/textSize18"
+            android:textSize="@dimen/textSize16"
             android:textColor="?colorText"
             android:text="@string/Loading_" />
 

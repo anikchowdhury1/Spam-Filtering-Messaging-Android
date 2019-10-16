@@ -126,7 +126,17 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
     // Processes message; returns true if message was blocked, false else
     private boolean processMessageData(Context context, Map<String, String> data) {
         String number = data.get(ContactsAccessHelper.ADDRESS);
+        String person = data.get(ContactsAccessHelper.PERSON);
         String body = data.get(ContactsAccessHelper.BODY);
+
+        if (number != null){
+            Log.d("number: ", number);
+        }
+        if (person != null){
+            Log.d("person: ", person);
+        }
+
+
 
         // private number detected
         if (ContactsAccessHelper.isPrivatePhoneNumber(number)) {

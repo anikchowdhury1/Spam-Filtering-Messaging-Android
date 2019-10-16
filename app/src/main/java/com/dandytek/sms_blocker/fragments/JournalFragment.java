@@ -20,6 +20,7 @@ package com.dandytek.sms_blocker.fragments;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -198,11 +199,13 @@ public class JournalFragment extends Fragment implements FragmentArguments {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                Log.d("query:",query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                Log.d("newText:",newText);
                 reloadItems(newText, false);
                 return true;
             }
@@ -312,14 +315,16 @@ public class JournalFragment extends Fragment implements FragmentArguments {
     }
 
     // Reloads items
-    private void reloadItems(@NonNull String itemsFilter, boolean force) {
+    public void reloadItems(@NonNull String itemsFilter, boolean force) {
         if (!force && this.itemsFilter.equals(itemsFilter)) {
             return;
         }
+        Log.d("itemfilter: ",itemsFilter);
         this.itemsFilter = itemsFilter;
         dismissSnackBar();
 
         int listPosition = listView.getFirstVisiblePosition();
+        Log.d("journal list position: ",String.valueOf(listPosition));
         loadListViewItems(itemsFilter, false, listPosition);
     }
 
@@ -329,6 +334,7 @@ public class JournalFragment extends Fragment implements FragmentArguments {
             return;
         }
         int loaderId = 0;
+        Log.d("journal itemfilter: ", itemsFilter);
         JournalItemsLoaderCallbacks callbacks =
                 new JournalItemsLoaderCallbacks(getContext(), cursorAdapter,
                         itemsFilter, deleteItems, listView, listPosition);
@@ -516,6 +522,7 @@ public class JournalFragment extends Fragment implements FragmentArguments {
             this.deleteItems = deleteItems;
             this.listView = listView;
             this.listPosition = listPosition;
+            Log.d("journal callbacks itemfilter: ", itemsFilter);
         }
 
         @Override
@@ -535,6 +542,7 @@ public class JournalFragment extends Fragment implements FragmentArguments {
             listView.post(new Runnable() {
                 @Override
                 public void run() {
+                    Log.d("listposition: ",String.valueOf(listPosition));
                     listView.setSelection(listPosition);
                 }
             });

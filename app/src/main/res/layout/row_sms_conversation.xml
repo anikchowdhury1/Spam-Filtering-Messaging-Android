@@ -11,6 +11,7 @@
 
     <LinearLayout
         android:id="@+id/content_shape"
+        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@drawable/shape_sms_body"
@@ -27,7 +28,9 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:textColor="?colorTextSms"
-            android:textSize="@dimen/textSize18" />
+            android:textSize="@dimen/textSize16"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
 
         <TextView
             android:id="@+id/date"
@@ -37,7 +40,7 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:textColor="?colorTextSms"
-            android:textSize="@dimen/textSize14" />
+            android:textSize="@dimen/textSize12" />
     </LinearLayout>
 
     <View
