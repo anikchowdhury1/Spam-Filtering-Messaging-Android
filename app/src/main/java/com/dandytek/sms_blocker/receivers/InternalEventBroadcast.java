@@ -20,6 +20,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 /**
@@ -57,6 +59,7 @@ public class InternalEventBroadcast extends BroadcastReceiver {
             break;
             case SMS_WAS_DELETED: {
                 String number = intent.getStringExtra(CONTACT_NUMBER);
+                Log.d("on receive dialog", number);
                 if (number != null) {
                     onSMSWasDeleted(number);
                 }

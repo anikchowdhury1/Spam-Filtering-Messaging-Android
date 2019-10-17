@@ -25,12 +25,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.annotation.IdRes;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import android.telephony.SubscriptionInfo;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -40,6 +34,13 @@ import android.view.Window;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.dandytek.sms_blocker.R;
 import com.dandytek.sms_blocker.activities.MainActivity;
@@ -261,14 +262,14 @@ public class SettingsFragment extends Fragment implements FragmentArguments {
                 Settings.GO_TO_JOURNAL_AT_START);
         adapter.addCheckbox(R.string.Back_button, R.string.Exit_on_back_pressed,
                 Settings.DONT_EXIT_ON_BACK_PRESSED);
-        adapter.addCheckbox(R.string.UI_theme_dark, 0, Settings.UI_THEME_DARK, new View.OnClickListener() {
+      /*  adapter.addCheckbox(R.string.UI_theme_dark, 0, Settings.UI_THEME_DARK, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 restartApp();
             }
-        });
+        }); */
 
-        // app data export/import
+   /*     // app data export/import
         adapter.addTitle(R.string.App_data);
         // export DB file
         adapter.addButton(R.string.Export_data, R.string.Write_data_into_external,
@@ -313,7 +314,7 @@ public class SettingsFragment extends Fragment implements FragmentArguments {
                             }
                         });
                     }
-                });
+                }); */
 
         // add adapter to the ListView and scroll list to position
         listView.setAdapter(adapter);

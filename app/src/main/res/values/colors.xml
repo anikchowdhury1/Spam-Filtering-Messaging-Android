@@ -2,7 +2,8 @@
 <resources>
     <!-- Light theme colors -->
     <color name="edit">#ffffff</color>
-    <color name="accent">#f4511e</color>
+    <color name="accent">#EF5350</color>
+    <color name="accents">#06417d</color>
     <color name="accent2">#42a5f5</color>
     <color name="border">#bdbdbd</color>
     <color name="checked">#e3f2fd</color>
@@ -10,15 +11,15 @@
     <color name="pressed">#e1f5fe</color>
     <color name="text">#000000</color>
     <color name="text2">#949494</color>
-    <color name="link">#304ffe</color>
-    <color name="incomeSms">#ffecb3</color>
-    <color name="outcomeSms">#bbdefb</color>
+    <color name="link">#6B7CF0</color>
+    <color name="incomeSms">#eeeeee</color>
+    <color name="outcomeSms">#EF9A9A</color>
     <color name="textSms">#000000</color>
 
     <!-- Dark theme colors -->
     <color name="edit_d">#424242</color>
-    <color name="accent_d">#f4511e</color>
-    <color name="accent2_d">#1e88e5</color>
+    <color name="accent_d">#ff4081</color>
+    <color name="accent2_d">#FDE935</color>
     <color name="border_d">#9e9e9e</color>
     <color name="checked_d">#37474f</color>
     <color name="titleBackground_d">#263238</color>
@@ -26,7 +27,7 @@
     <color name="text_d">#eeeeee</color>
     <color name="text2_d">#bdbdbd</color>
     <color name="link_d">#304ffe</color>
-    <color name="incomeSms_d">#ffecb3</color>
-    <color name="outcomeSms_d">#bbdefb</color>
+    <color name="incomeSms_d">#00ACC1</color>
+    <color name="outcomeSms_d">#C5CEDB</color>
     <color name="textSms_d">#000000</color>
 </resources>

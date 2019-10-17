@@ -35,15 +35,18 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.dandytek.sms_blocker.R;
 import com.dandytek.sms_blocker.activities.CustomFragmentActivity;
 import com.dandytek.sms_blocker.adapters.SMSConversationsListCursorAdapter;
 import com.dandytek.sms_blocker.receivers.InternalEventBroadcast;
+import com.dandytek.sms_blocker.utils.ButtonsBar;
 import com.dandytek.sms_blocker.utils.ContactsAccessHelper;
 import com.dandytek.sms_blocker.utils.ContactsAccessHelper.SMSConversation;
 import com.dandytek.sms_blocker.utils.DatabaseAccessHelper;
@@ -54,7 +57,6 @@ import com.dandytek.sms_blocker.utils.Permissions;
 import com.dandytek.sms_blocker.utils.ProgressDialogHolder;
 import com.dandytek.sms_blocker.utils.Utils;
 
-
 /**
  * Fragment for showing all SMS conversations
  */
@@ -62,7 +64,13 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
     private InternalEventBroadcast internalEventBroadcast = null;
     private SMSConversationsListCursorAdapter cursorAdapter = null;
     private ListView listView = null;
+    private JournalFragment journalFragment = null;
+    private RecyclerView recyclerView = null;
     private int listPosition = 0;
+    private String itemsFilter = "";
+    private ButtonsBar snackBar = null;
+    private SearchView searchView = null;
+    private MenuItem itemSearch = null;
 
     public SMSConversationsListFragment() {
         // Required empty public constructor
@@ -115,6 +123,11 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
         listView = (ListView) view.findViewById(R.id.rows_list);
         listView.setAdapter(cursorAdapter);
 
+        // recylerview
+
+       // recyclerView = (RecyclerView) view.findViewById(R.id.rows_list);
+      //  recyclerView.setAdapter(cursorAdapter);
+
         // on list empty comment
         TextView textEmptyView = (TextView) view.findViewById(R.id.text_empty);
         listView.setEmptyView(textEmptyView);
@@ -129,6 +142,11 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
                 if (threadId >= 0 &&
                         // refresh cached list view items
                         cursorAdapter.invalidateCache(threadId)) {
+                    Cursor cursor = cursorAdapter.getCursor();
+
+                    Log.d("dialog not",String.valueOf(cursor));
+
+                    cursorAdapter.changeCursor(cursor);
                     cursorAdapter.notifyDataSetChanged();
                 } else {
                     // reload all list view items
@@ -140,6 +158,12 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
             @Override
             public void onSMSWasDeleted(String phoneNumber) {
                 // reload all list view items
+                Cursor cursor = cursorAdapter.getCursor();
+
+                Log.d("dialog 2",String.valueOf(cursor));
+
+                cursorAdapter.changeCursor(cursor);
+                cursorAdapter.notifyDataSetChanged();
                 loadListViewItems(listPosition,false, false);
             }
 
@@ -188,8 +212,107 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
             }
         });
 
+
+        /*
+        itemSearch = menu.findItem(R.id.action_search);
+        Utils.setMenuIconTint(getContext(), itemSearch, R.attr.colorAccent);
+        itemSearch.setVisible(true);
+
+        // get the view from search menu item
+        searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
+        searchView.setQueryHint(getString(R.string.Search_action));
+        // set on text change listener
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                reloadItems(newText, false);
+                return true;
+            }
+        });
+
+        // on search cancelling
+        // SearchView.OnCloseListener is not calling so use other way...
+        MenuItemCompat.setOnActionExpandListener(itemSearch,
+                new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        reloadItems("", false);
+                        return true;
+                    }
+                });
+        */
+
+
+
+
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+
+    /*
+
+    // Reloads items
+    public void reloadItems(@NonNull String itemsFilter, boolean force) {
+        if (!force && this.itemsFilter.equals(itemsFilter)) {
+            return;
+        }
+        Log.d("sms itemfilter: ",itemsFilter);
+        this.itemsFilter = itemsFilter;
+        dismissSnackBar();
+
+        int listPosition = listView.getFirstVisiblePosition();
+        Log.d("list position: ",String.valueOf(listPosition));
+        Log.d("sms list position: ",String.valueOf(listPosition));
+        loadListViewItems(itemsFilter, false, listPosition, false, true);
+    }
+
+
+    // Loads items to the list view
+    private void loadListViewItems(String itemsFilter, boolean deleteItems, int listPosition, boolean markSeen, boolean showProgress) {
+        if (!isAdded()) {
+            return;
+        }
+        int loaderId = 0;
+        Log.d("sms itemfilter: ", itemsFilter);
+        ConversationsLoaderCallbacks callbacks =
+                new ConversationsLoaderCallbacks(getContext(), listView,
+                        listPosition, cursorAdapter, markSeen, showProgress);
+        LoaderManager manager = getLoaderManager();
+        if (manager.getLoader(loaderId) == null) {
+            // init and run the items loader
+            manager.initLoader(loaderId, null, callbacks);
+        } else {
+            // restart loader
+            manager.restartLoader(loaderId, null, callbacks);
+        }
+    }
+
+
+    // Closes snack bar
+    public boolean dismissSnackBar() {
+        clearCheckedItems();
+        return snackBar != null && snackBar.dismiss();
+    }
+
+    // Clears all items selection
+    private void clearCheckedItems() {
+        if (cursorAdapter != null) {
+            cursorAdapter.setAllItemsChecked(false);
+        }
+    }
+
+
+    */
 
     @Override
     public void onPause() {
@@ -233,8 +356,10 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
             Log.d("person",person);
             Log.d("person's sms",sms.number);
 
+
             // create menu dialog
             DialogBuilder dialog = new DialogBuilder(getContext());
+
             dialog.setTitle(person);
             // add menu item of sms deletion
             dialog.addItem(R.string.Delete_thread, new View.OnClickListener() {
@@ -244,8 +369,17 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
                         // remove SMS thread
                         ContactsAccessHelper db = ContactsAccessHelper.getInstance(getContext());
                         if (db.deleteSMSMessagesByThreadId(getContext(), sms.threadId)) {
+
+                            Cursor cursor = cursorAdapter.getCursor();
+
+                            Log.d("dialog",String.valueOf(cursor));
+
+                            cursorAdapter.changeCursor(cursor);
+                            cursorAdapter.notifyDataSetChanged();
+
                             // reload list
                             int listPosition = listView.getFirstVisiblePosition();
+
                             loadListViewItems(listPosition,false, true);
                         }
                     } else {
@@ -321,17 +455,42 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
 
     // SMS conversations loader
     private static class ConversationsLoader extends CursorLoader {
+
+       // private String itemsFilter;
+
+      /*  ConversationsLoader(Context context) {
+            super(context);
+        } */
+
+
         ConversationsLoader(Context context) {
             super(context);
+           // this.itemsFilter = itemsFilter;
         }
 
         @Override
         public Cursor loadInBackground() {
             // get all SMS conversations
+
+           /* if (!itemsFilter.equals("")) {
+                ContactsAccessHelper db_1 = ContactsAccessHelper.getInstance(getContext());
+                DatabaseAccessHelper db_2 = DatabaseAccessHelper.getInstance(getContext());
+                if (db_2 != null){
+                    return db_2.getContactNumbersByNumber(itemsFilter);
+                }
+            } */
+
+
             ContactsAccessHelper db = ContactsAccessHelper.getInstance(getContext());
             return db.getSMSConversations(getContext());
+
         }
     }
+
+
+
+
+
 
     // SMS conversations loader callbacks
     private static class ConversationsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -342,21 +501,31 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
         private int listPosition;
         private boolean markSeen;
         private boolean showProgress;
+       // private String itemsFilter;
+       // private boolean deleteItems;
 
-        ConversationsLoaderCallbacks(Context context, ListView listView, int listPosition,
+
+        ConversationsLoaderCallbacks(Context context,
+                                     ListView listView,
+                                     int listPosition,
                                      SMSConversationsListCursorAdapter cursorAdapter,
-                                     boolean markSeen, boolean showProgress) {
+                                     boolean markSeen,
+                                     boolean showProgress) {
             this.context = context;
             this.listView = listView;
             this.listPosition = listPosition;
             this.cursorAdapter = cursorAdapter;
             this.markSeen = markSeen;
             this.showProgress = showProgress;
+           // this.itemsFilter = itemsFilter;
+           // this.deleteItems = deleteItems;
 
-            Log.d("list position:", String.valueOf(listPosition));
+           // Log.d("sms callbacks: ", itemsFilter);
+
+          //  Log.d("list position:", String.valueOf(listPosition));
 
             listView.setSelection(listPosition);
-            listView.setVisibility(View.INVISIBLE);
+            listView.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -364,12 +533,18 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
             if (showProgress) {
                 progress.show(context, R.string.Loading_);
             }
+           // return new ConversationsLoader(context, itemsFilter);
+
             return new ConversationsLoader(context);
         }
 
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+            Log.d("OnLoadFinised",String.valueOf(cursor));
+
             cursorAdapter.changeCursor(cursor);
+            cursorAdapter.notifyDataSetChanged();
+
 
             // scroll list to the saved position
             listView.post(new Runnable() {
@@ -377,6 +552,7 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
                 public void run() {
                     Cursor cursor = cursorAdapter.getCursor();
                     if (cursor != null && !cursor.isClosed() && cursor.getCount() > 0) {
+                        cursorAdapter.notifyDataSetChanged();
                         listView.setSelection(listPosition);
                         listView.setVisibility(View.VISIBLE);
                     }
@@ -394,6 +570,7 @@ public class SMSConversationsListFragment extends Fragment implements FragmentAr
         @Override
         public void onLoaderReset(Loader<Cursor> loader) {
             cursorAdapter.changeCursor(null);
+            cursorAdapter.notifyDataSetChanged();
             progress.dismiss();
         }
     }

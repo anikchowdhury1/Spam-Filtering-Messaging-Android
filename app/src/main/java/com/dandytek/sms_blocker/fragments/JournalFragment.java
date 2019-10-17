@@ -20,16 +20,7 @@ package com.dandytek.sms_blocker.fragments;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.CursorLoader;
-import androidx.loader.content.Loader;
-import androidx.core.view.MenuItemCompat;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,9 +31,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dandytek.sms_blocker.receivers.InternalEventBroadcast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+
 import com.dandytek.sms_blocker.R;
 import com.dandytek.sms_blocker.adapters.JournalCursorAdapter;
+import com.dandytek.sms_blocker.receivers.InternalEventBroadcast;
 import com.dandytek.sms_blocker.utils.ButtonsBar;
 import com.dandytek.sms_blocker.utils.DatabaseAccessHelper;
 import com.dandytek.sms_blocker.utils.DatabaseAccessHelper.Contact;
@@ -197,11 +199,13 @@ public class JournalFragment extends Fragment implements FragmentArguments {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                Log.d("query:",query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                Log.d("newText:",newText);
                 reloadItems(newText, false);
                 return true;
             }
@@ -311,14 +315,16 @@ public class JournalFragment extends Fragment implements FragmentArguments {
     }
 
     // Reloads items
-    private void reloadItems(@NonNull String itemsFilter, boolean force) {
+    public void reloadItems(@NonNull String itemsFilter, boolean force) {
         if (!force && this.itemsFilter.equals(itemsFilter)) {
             return;
         }
+        Log.d("itemfilter: ",itemsFilter);
         this.itemsFilter = itemsFilter;
         dismissSnackBar();
 
         int listPosition = listView.getFirstVisiblePosition();
+        Log.d("journal list position: ",String.valueOf(listPosition));
         loadListViewItems(itemsFilter, false, listPosition);
     }
 
@@ -328,6 +334,7 @@ public class JournalFragment extends Fragment implements FragmentArguments {
             return;
         }
         int loaderId = 0;
+        Log.d("journal itemfilter: ", itemsFilter);
         JournalItemsLoaderCallbacks callbacks =
                 new JournalItemsLoaderCallbacks(getContext(), cursorAdapter,
                         itemsFilter, deleteItems, listView, listPosition);
@@ -349,10 +356,11 @@ public class JournalFragment extends Fragment implements FragmentArguments {
         public boolean onLongClick(View view) {
             // get contact from the clicked row
             final JournalRecord record = cursorAdapter.getRecord(view);
+
             if (record == null) return true;
 
             // find contacts in black and white lists by record's caller and number
-            Contact blackContact = null, whiteContact = null;
+            Contact blackContact = null, whiteContact = null, fs_blackContact = null;
             final String number = (record.number == null ? record.caller : record.number);
             DatabaseAccessHelper db = DatabaseAccessHelper.getInstance(getContext());
             if (db != null) {
@@ -362,7 +370,11 @@ public class JournalFragment extends Fragment implements FragmentArguments {
                         if (contact.type == Contact.TYPE_BLACK_LIST) {
                             blackContact = contact;
                         } else {
-                            whiteContact = contact;
+                            if(contact.type == Contact.TYPE_FS_BLACK_LIST)
+                                fs_blackContact = contact;
+                            else
+                                whiteContact = contact;
+
                         }
                     }
                 }
@@ -421,11 +433,26 @@ public class JournalFragment extends Fragment implements FragmentArguments {
                     }
                 });
             } else {
-                // add menu item of adding the contact to the black list
-                dialog.addItem(R.string.Move_to_black_list, new View.OnClickListener() {
+                if(fs_blackContact == null){
+
+                    // add menu item of adding the contact to the black list
+                    dialog.addItem(R.string.Move_to_black_list, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            moveContact(Contact.TYPE_BLACK_LIST, record.caller, record.number);
+                        }
+                    });
+                }
+            }
+
+            // if contact is found in the firestore black list
+            if (fs_blackContact != null) {
+                // add menu item of excluding the contact from the black list
+                final long contactId = fs_blackContact.id;
+                dialog.addItem(R.string.Exclude_from_black_list, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        moveContact(Contact.TYPE_BLACK_LIST, record.caller, record.number);
+                        deleteContact(contactId);
                     }
                 });
             }
@@ -495,6 +522,7 @@ public class JournalFragment extends Fragment implements FragmentArguments {
             this.deleteItems = deleteItems;
             this.listView = listView;
             this.listPosition = listPosition;
+            Log.d("journal callbacks itemfilter: ", itemsFilter);
         }
 
         @Override
@@ -514,6 +542,7 @@ public class JournalFragment extends Fragment implements FragmentArguments {
             listView.post(new Runnable() {
                 @Override
                 public void run() {
+                    Log.d("listposition: ",String.valueOf(listPosition));
                     listView.setSelection(listPosition);
                 }
             });

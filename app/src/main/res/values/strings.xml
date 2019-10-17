@@ -60,7 +60,7 @@
     <string name="List_of_SMS">SMS list</string>
     <string name="Black_list">Blacklist</string>
     <string name="White_list">Whitelist</string>
-    <string name="Journal">Event log</string>
+    <string name="Journal">Spam SMS / Call</string>
     <string name="Settings">Settings</string>
     <string name="Information">Information</string>
     <string name="Exit">Exit</string>
@@ -109,7 +109,7 @@
     <string name="New_message">New message</string>
     <string name="needs_permission">needs permission</string>
     <string name="needs_permissions">needs permissions</string>
-    <string name="Delete_thread">Delete thread</string>
+    <string name="Delete_thread">Delete message</string>
     <string name="Write_message">Write message</string>
     <string name="Add_from_contacts">Add from contacts</string>
     <string name="Enter_message">Enter message</string>
@@ -156,8 +156,7 @@
     <string name="About">About</string>
     <string name="Info_about">
         This is a free application that gives you a convenient way of configure
-        the blocking of unwanted calls and SMS. It supports the light and
-        dark UI themes, has no ads and is provided with open source code.
+        the blocking of unwanted calls and SMS. It supports the light UI themes, has no ads.
     </string>
 
     <string name="Attention">Attention</string>
@@ -222,21 +221,17 @@
 
     <string name="Licence">Licence</string>
     <string name="Info_licence">
-        Copyright (&#169;) 2017 Anton Kaliturin.
-        The Blacklist Blocker application is a free software and is distributed under
-        the terms of the Apache License Version 2.0:
-        \n"https://www.apache.org/licenses/LICENSE-2.0"
-        \nThe application is distributed with the hope that it can be useful for someone,
-        but without any guarantees or conditions.
-        \nPrivacy policy of the application:
-        \n"https://github.com/kaliturin/blacklist/wiki/privacy-policy"
-        \nThe source code of the application:
-        \n"http://github.com/kaliturin/blacklist"
+        Copyright (&#169;) 2019 Dandy Dialer.
+        The SMS Blocker application is distributed under
+        the terms of the End-User License Agreement.
+        \nThe application is inspired from Blacklist Blocker from F-droid
+        \nhttps://f-droid.org/en/packages/com.kaliturin.blacklist/
     </string>
 
-    <string name="Author">Author</string>
+    <string name="Author">About Us</string>
     <string name="Info_author">
-        "Anton Kaliturin (kaliturin@gmail.com)"
+        Dandy Dialer.
+        \n"https://www.dandydialer.com/"
     </string>
 
     <string-array name="phone_metadata">

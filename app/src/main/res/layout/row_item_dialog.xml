@@ -30,7 +30,7 @@
             android:paddingLeft="6dp"
             android:paddingRight="6dp"
             android:textColor="?colorText"
-            android:textSize="@dimen/textSize18" />
+            android:textSize="@dimen/textSize16" />
 
         <ImageView
             android:id="@+id/item_image"
