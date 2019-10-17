@@ -60,7 +60,7 @@
     <string name="List_of_SMS">SMS list</string>
     <string name="Black_list">Blacklist</string>
     <string name="White_list">Whitelist</string>
-    <string name="Journal">Blocked SMS / Call</string>
+    <string name="Journal">Spam SMS / Call</string>
     <string name="Settings">Settings</string>
     <string name="Information">Information</string>
     <string name="Exit">Exit</string>
