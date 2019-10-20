@@ -241,9 +241,11 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
         Contact contact_wl = findContactByType(contacts, Contact.TYPE_WHITE_LIST);
         Contact contact_cb = findContactByType(contacts,Contact.TYPE_BLACK_LIST);
         Contact contact_fb = findContactByType(contacts,Contact.TYPE_FS_BLACK_LIST);
+        Contact contact_cdb = findContactByType(contacts,Contact.TYPE_CS_BLACK_LIST);
 
         Log.d("contact test bl:",String.valueOf(contact_cb));
         Log.d("contact test wl:",String.valueOf(contact_wl));
+        Log.d("contact test cdb:",String.valueOf(contact_cdb));
 
         // custom block msg
         DatabaseAccessHelper custom_app_db = DatabaseAccessHelper.getInstance(context);
@@ -267,11 +269,11 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
                 if(number.toLowerCase().contains(spam_tags[i].toLowerCase())){
                     if (custom_app_db != null){
                         // 'move contact to black list'
-                        long check_bl = custom_app_db.addContact(Contact.TYPE_BLACK_LIST, number, number);
+                        long check_bl = custom_app_db.addContact(Contact.TYPE_CS_BLACK_LIST, number, number);
                         Log.d("number matched: ", number);
                         Log.d("contact ID : ", String.valueOf(check_bl));
                         i = 1000;
-                        Contact contact_test = findContactByType(contacts,Contact.TYPE_BLACK_LIST);
+                        Contact contact_test = findContactByType(contacts,Contact.TYPE_CS_BLACK_LIST);
                         Log.d("contact test:",String.valueOf(contact_test));
                         if(check_bl >= 0){
                             abort = true;

@@ -360,7 +360,7 @@ public class JournalFragment extends Fragment implements FragmentArguments {
             if (record == null) return true;
 
             // find contacts in black and white lists by record's caller and number
-            Contact blackContact = null, whiteContact = null, fs_blackContact = null;
+            Contact blackContact = null, whiteContact = null, fs_blackContact = null, cs_blackContact = null;
             final String number = (record.number == null ? record.caller : record.number);
             DatabaseAccessHelper db = DatabaseAccessHelper.getInstance(getContext());
             if (db != null) {
@@ -372,8 +372,14 @@ public class JournalFragment extends Fragment implements FragmentArguments {
                         } else {
                             if(contact.type == Contact.TYPE_FS_BLACK_LIST)
                                 fs_blackContact = contact;
-                            else
-                                whiteContact = contact;
+                            else{
+                                if(contact.type == Contact.TYPE_CS_BLACK_LIST){
+                                    cs_blackContact = contact;
+                                }
+                                else
+                                    whiteContact = contact;
+                            }
+
 
                         }
                     }
@@ -434,7 +440,7 @@ public class JournalFragment extends Fragment implements FragmentArguments {
                     }
                 });
             } else {
-                if(fs_blackContact == null){
+                if(fs_blackContact == null && cs_blackContact == null){
 
                     // add menu item of adding the contact to the black list
                     dialog.addItem(R.string.Move_to_black_list, new View.OnClickListener() {
@@ -457,6 +463,22 @@ public class JournalFragment extends Fragment implements FragmentArguments {
                     }
                 });
             }
+
+
+
+
+            // if contact is found in the custom black list
+            if (cs_blackContact != null) {
+                // add menu item of excluding the contact from the black list
+                final long contactId = cs_blackContact.id;
+                dialog.addItem(R.string.Exclude_from_black_list, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        deleteContact(contactId);
+                    }
+                });
+            }
+
 
             // if contact is not found in the white list
             if (whiteContact == null) {

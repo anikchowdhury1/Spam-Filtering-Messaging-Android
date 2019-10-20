@@ -347,7 +347,7 @@ public class ContactsFragment extends Fragment implements FragmentArguments {
 
     // Loads SMS conversations to the list view
     private void loadListViewItems(String itemsFilter, boolean deleteItems, int listPosition) {
-        if (contactType == 2 || contactType == 1){
+        if (contactType == 2 || contactType == 1 || contactType == 4){
             if (!isAdded()) {
                 return;
             }

@@ -632,6 +632,7 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
         public static final int TYPE_BLACK_LIST = 1;
         public static final int TYPE_WHITE_LIST = 2;
         public static final int TYPE_FS_BLACK_LIST = 3;
+        public static final int TYPE_CS_BLACK_LIST = 4;
 
         public final long id;
         public final String name;
