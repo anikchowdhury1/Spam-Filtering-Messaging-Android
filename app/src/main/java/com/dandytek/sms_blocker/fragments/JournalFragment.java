@@ -429,6 +429,7 @@ public class JournalFragment extends Fragment implements FragmentArguments {
                 dialog.addItem(R.string.Exclude_from_black_list, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Log.d("blacklist dialog",String.valueOf(contactId));
                         deleteContact(contactId);
                     }
                 });

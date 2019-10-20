@@ -48,6 +48,7 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
     private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
     private static final String SMS_DELIVER = "android.provider.Telephony.SMS_DELIVER";
    // boolean check_conflict_tag = false;
+    boolean abort = false;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -129,7 +130,13 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
         String number = data.get(ContactsAccessHelper.ADDRESS);
        // String person = data.get(ContactsAccessHelper.PERSON);
         String body = data.get(ContactsAccessHelper.BODY);
-        String[] spam_tags = {"robi", "teletalk", "GP", "grameen phone", "banglalink", "special", "bonus", "Offer", "Data", "Bundle", "GB", "Combo", "Special", "Best", "Day", "fun", "App", "Streaming", "darun", "airtel", "sale", "Jhotpot", "job", "alert", "deals", "day", "cashback", "bundle", "Loan", "data", "Govt", "Eid", "Puja", "christmas", "+8801673889597"};
+        String[] spam_tags = {"robi", "teletalk", "GP", "grameen phone", "banglalink",
+                "special", "bonus", "Offer", "Data", "Bundle", "GB", "Combo", "Special",
+                "Best", "Day", "fun", "App", "Streaming", "darun", "airtel", "sale", "jhotpot",
+                "job", "alert", "deals", "deal", "best", "days", "common", "free", "Super",
+                "buy", "your", "day", "cashback", "bundle", "Loan", "data", "Govt", "Eid",
+                "Puja", "christmas", "+8801673889597","bl", "bd", "tax", "last",
+                "dhamaka", "dhonnobad", "app", "game", "ghurbo"};
 
   /*      ArrayList<String> tags = new ArrayList<String>();
 
@@ -173,41 +180,9 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
        // tags.add();
 
 
-        // custom block msg
-
-        final DatabaseAccessHelper custom_app_db = DatabaseAccessHelper.getInstance(context);
 
 
 
-
-
-        if (number != null){
-
-
-          //  boolean ans = tags.contains(number);
-
-          /*  if(ans) {
-                if (custom_app_db != null){
-                    // 'move contact to black list'
-                    custom_app_db.addContact_fs(Contact.TYPE_BLACK_LIST, number, number);
-                }
-            } */
-
-            for (int i = 0; i < spam_tags.length; i++) {
-                Log.d("list length: ", String.valueOf(spam_tags.length));
-                Log.d("length: ",String.valueOf(i));
-
-                if(number.toLowerCase().contains(spam_tags[i].toLowerCase())){
-                    if (custom_app_db != null){
-                        // 'move contact to black list'
-                        Log.d("number matched: ", number);
-                        custom_app_db.addContact_fs(Contact.TYPE_BLACK_LIST, number, number);
-                    }
-                }
-            }
-
-
-        }
 
 
 
@@ -240,20 +215,75 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
         // get contacts linked to the number
         List<Contact> contacts = getContacts(context, number);
         if (contacts == null) {
+            Log.d("contacts result: ",String.valueOf(contacts));
             return false;
         }
 
         // if contact is from the white list
         Contact contact = findContactByType(contacts, Contact.TYPE_WHITE_LIST);
+        Log.d("whitelist: ", String.valueOf(contact));
+
         if (contact != null) {
+            Log.d("contact from wl",String.valueOf(contact));
             return false;
         }
+
 
         // get name of contact
         String name = (contacts.size() > 0 ? contacts.get(0).name : null);
         //data.put(ContactsAccessHelper.NAME, name);
 
 
+
+
+
+        Contact contact_wl = findContactByType(contacts, Contact.TYPE_WHITE_LIST);
+        Contact contact_cb = findContactByType(contacts,Contact.TYPE_BLACK_LIST);
+        Contact contact_fb = findContactByType(contacts,Contact.TYPE_FS_BLACK_LIST);
+
+        Log.d("contact test bl:",String.valueOf(contact_cb));
+        Log.d("contact test wl:",String.valueOf(contact_wl));
+
+        // custom block msg
+        DatabaseAccessHelper custom_app_db = DatabaseAccessHelper.getInstance(context);
+
+        if (contact_wl == null && contact_cb == null && contact_fb == null){
+
+
+            //  boolean ans = tags.contains(number);
+
+          /*  if(ans) {
+                if (custom_app_db != null){
+                    // 'move contact to black list'
+                    custom_app_db.addContact_fs(Contact.TYPE_BLACK_LIST, number, number);
+                }
+            } */
+
+            for (int i = 0; i < spam_tags.length; i++) {
+                Log.d("list length: ", String.valueOf(spam_tags.length));
+                Log.d("length: ",String.valueOf(i));
+
+                if(number.toLowerCase().contains(spam_tags[i].toLowerCase())){
+                    if (custom_app_db != null){
+                        // 'move contact to black list'
+                        long check_bl = custom_app_db.addContact(Contact.TYPE_BLACK_LIST, number, number);
+                        Log.d("number matched: ", number);
+                        Log.d("contact ID : ", String.valueOf(check_bl));
+                        i = 1000;
+                        Contact contact_test = findContactByType(contacts,Contact.TYPE_BLACK_LIST);
+                        Log.d("contact test:",String.valueOf(contact_test));
+                        if(check_bl >= 0){
+                            abort = true;
+                            // abortSMSAndNotify(context, number, number, body);
+                        }
+
+
+                    }
+                }
+            }
+
+
+        }
 
 
 
@@ -270,6 +300,7 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
         // if contact is from the black list
         if (Settings.getBooleanValue(context, Settings.BLOCK_SMS_FROM_BLACK_LIST)) {
             contact = findContactByType(contacts, Contact.TYPE_BLACK_LIST);
+            Log.d("checking blacklist: ",String.valueOf(contact));
             Contact contact_fs = findContactByType(contacts, Contact.TYPE_FS_BLACK_LIST);
             if (contact != null || contact_fs != null) {
                 // abort SMS and notify user
@@ -277,7 +308,6 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
                     Log.d("fire 3","fire3");
                     abortSMSAndNotify(context, number, contact_fs.name, body);
                 }
-
                 else
                 {
                     Log.d("fire 2","fire2");
@@ -290,7 +320,7 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
             }
         }
 
-        boolean abort = false;
+
 
         // if block numbers that are not in the contact list
         if (Settings.getBooleanValue(context, Settings.BLOCK_SMS_NOT_FROM_CONTACTS) &&
@@ -322,6 +352,9 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
 
         return abort;
     }
+
+
+
 
     // Finds contact by type
     private Contact findContactByType(List<Contact> contacts, int contactType) {

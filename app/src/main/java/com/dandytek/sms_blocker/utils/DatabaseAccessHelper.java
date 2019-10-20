@@ -799,6 +799,7 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
         } finally {
             db.endTransaction();
         }
+        Log.d("bl added",String.valueOf(contactId));
 
         return contactId;
     }
@@ -860,7 +861,7 @@ public class DatabaseAccessHelper extends SQLiteOpenHelper {
             number = contactName;
         }
 
-        Log.d("person number name:",number);
+        Log.d("gen person number name:",number);
         List<ContactNumber> numbers = new LinkedList<>();
         numbers.add(new ContactNumber(0, number, 0));
         return addContact(contactType, contactName, numbers);
