@@ -136,7 +136,8 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
                 "job", "alert", "deals", "deal", "best", "days", "common", "free", "Super",
                 "buy", "your", "day", "cashback", "bundle", "Loan", "data", "Govt", "Eid",
                 "Puja", "christmas", "+8801673889597","bl", "bd", "tax", "last",
-                "dhamaka", "dhonnobad", "app", "game", "ghurbo"};
+                "dhamaka", "dhonnobad", "app", "game", "ghurbo", "16368", "22200",
+                "carnival", "16480", "notun", "bondhu", "16449", "mobile", "tv", "16462", "16280"};
 
   /*      ArrayList<String> tags = new ArrayList<String>();
 
